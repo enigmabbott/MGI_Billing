@@ -1,0 +1,23 @@
+#!/usr/bin/env lims-perl
+use strict;
+use WashU::Billing::Controller;
+
+my ($file) = @ARGV or die "need file";
+
+my $controller = WashU::Billing::Controller->new( spreadsheet => $file);
+
+my $file=$controller->generate_internal_invoice(invoice_sequence => 1, format => 'file');
+
+if($file){
+    print "created internal invoice: $file\n";
+}else {
+    print "DID NOT CREATE INTERNAL INVOICE... hope thats ok\n";
+}
+
+my @ext = $controller->get_external_invoice_units;
+
+my $i;
+for my $ext ( @ext) {
+    my $file = $controller->generate_external_invoice(invoice_unit => $ext, invoice_sequence => ++$i);
+    print "created external invoice: $file\n";
+}
