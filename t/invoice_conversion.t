@@ -1,6 +1,6 @@
 #!/gsc/bin/perl 
 use strict; 
-use Test::More qw/no_plan/;
+use Test::More;
 use FindBin qw($Bin);
 use WashU::Billing::Controller;
 use List::AllUtils qw(uniq);
@@ -19,16 +19,16 @@ my $string =$controller->generate_internal_invoice(invoice_sequence => 1, format
 my $length = length($string);
 ok($string, "got output string");
 my $expected = 62856;
-ok($length == $expected, "length is $length and expecting $expected");
+is($length ,$expected, "length is $length and expecting $expected");
 
 my @rows = split("\n", $string);
 
-ok(scalar(@rows) == 776, "row count is 776 " );
+is(scalar(@rows) , 776, "row count is as expected " );
 
 my @row_length = uniq map{length($_)} @rows;
-ok(scalar(@row_length) == 1 , "all rows same number of characters");
+is(scalar(@row_length) , 1 , "all rows same number of characters");
 
-ok($row_length[0] == 80, "number of characters per row is 80");
+is($row_length[0] , 80, "number of characters per row match");
 
 $controller = WashU::Billing::Controller->new( spreadsheet => $ext_file);
 ok($controller, "got external controller");
@@ -43,3 +43,5 @@ for my $ext ( @ext) {
     ok(($file and -e $file and -s $file), "file $file exists and is non-zero size"); 
     unlink $file if -e $file;
 }
+
+&done_testing();
